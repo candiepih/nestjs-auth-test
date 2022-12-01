@@ -92,4 +92,22 @@ export class UsersService {
 
     return null;
   }
+
+  async setTwoFactorAuthenticationSecret(secret: string, userId: ObjectId) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.twoFactorAuthenticationSecret = secret;
+    return await user.save();
+  }
+
+  async turnOnTwoFactorAuthentication(userId: ObjectId) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.isTwoFactorEnabled = true;
+    return await user.save();
+  }
 }

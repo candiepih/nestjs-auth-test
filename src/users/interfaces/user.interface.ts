@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongoose';
+
 export class IEmail {
   verified?: boolean;
   address: string;
@@ -21,8 +23,10 @@ export class IName {
 }
 
 export class IUser {
-  _id: string;
+  _id: ObjectId;
   name: IName;
   email: IEmail;
   phone: IPhone;
+  isTwoFactorEnabled: boolean;
+  twoFactorAuthenticationSecret: string;
 }

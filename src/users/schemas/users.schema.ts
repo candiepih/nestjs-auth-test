@@ -51,8 +51,11 @@ export class User {
   @Prop({ required: true, default: false })
   rememberMe: boolean;
 
-  @Prop({ required: true, default: true })
+  @Prop({ required: true, default: false })
   isTwoFactorEnabled: boolean;
+
+  @Prop()
+  twoFactorAuthenticationSecret: string;
 
   setPassword: (password: string) => void;
   validPassword: (password: string) => boolean;
