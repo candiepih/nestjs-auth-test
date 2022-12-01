@@ -5,22 +5,7 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center">Nest.js, A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
 
 ## Description
 
@@ -31,6 +16,144 @@
 ```bash
 $ npm install
 ```
+
+## Configuration
+
+Create a .env file and add the following env variables
+
+```.env
+SECRET=`<ANY_STRING_RANDOMIZE_FOR_SECURITY_PURPOSE>`
+AUTH_APP_NAME=`<NAME_OF_THIS_APP>`
+MONGODB_URI='<MONGO_DB_URI>'
+```
+
+## Routes
+
+- `GET /` - Index page
+- `GET /users` - Retrieves users. Guarded for login. Has been used to test logins
+- `POST /auth/register` - create new users
+
+request body
+
+```
+{
+    "email": <EMAIL_ADDRESS>,
+    "password": <YOUR_PASSWORD>,
+    "acceptedTerms": <ACCEPT_TERMS_BOOLEAN>,
+    "subscribedToNewsLetters": <BOOLEAN>
+}
+```
+
+result on success
+
+```
+{
+    "code": 564929
+}
+```
+
+Usually the code is sent via email. Fails with error if exists or invalid data.
+
+- `POST /auth/verify` - Using code from previous step pass the request body as follows
+
+```
+{
+    "email": <EMAIL_USED_TO_REGISTER>,
+    "verificationCode": <THE_CODE_FROM_PREV_STEP>
+}
+```
+
+on success
+
+```
+{
+    "success": true
+}
+```
+
+Fails if invalid user, or code, or verified
+
+- `POST /auth/login` - Handle user login with the following request body.
+
+```
+{
+    "email": <YOUR_EMAIL>,
+    "password": <YOUR_PASSWORD>
+}
+```
+
+Returns JWT token on success or fails with error
+
+```
+{
+    "token": <JWT_TOKEN>
+}
+```
+
+- `POST /auth/2fa/generate` - Generates a 2FA token with a QR code that you can scan and authenticate to any auth app
+
+Request body - None
+
+Authorization header
+
+```
+Authorization: Bearer <JWT_TOKEN_GENERATED_PREVIOUSLY>
+```
+
+Response
+
+```
+<QR CODE IMAGE DATA GENERATED. PASTE ON WEB BROWSER TO SHOW IMAGE. AND SCAN WITH A  2FA APP LIKE GOOGLE AUTHENTICATE OR ANY OTHER>
+```
+
+- `POST /auth/2fa/turn-on` - Turns on two factor authentication for an added layer of security
+
+Request body
+
+```
+{
+    "twoFactorAuthenticationCode": <CODE_FROM_YOUR_2FA_APP>
+}
+```
+
+Authorization header
+
+```
+Authorization: Bearer <JWT_TOKEN_GENERATED_PREVIOUSLY>
+```
+
+Response success or error on failure.
+
+```
+{ success: true }
+```
+
+- `POST /auth/2fa/authenticate` - authenticate using 2FA 
+
+Request body
+
+```
+{
+    "twoFactorAuthenticationCode": <CODE_FROM_YOUR_2FA_APP>
+}
+```
+
+Authorization header
+
+```
+Authorization: Bearer <JWT_TOKEN_GENERATED_PREVIOUSLY>
+```
+
+on success returns generted JWT_TOKEN
+
+```
+{
+    "email": <YOUR_EMAIL_ADDRESS>,
+    "token": <JWT_TOKEN>
+}
+```
+
+Fails on error
 
 ## Running the app
 
