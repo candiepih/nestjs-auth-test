@@ -51,7 +51,7 @@ export class AuthService {
 
     const otpauthUrl = authenticator.keyuri(
       user.email.address,
-      process.env.AUTH_APP_NAME,
+      this.configService.get('AUTH_APP_NAME'),
       secret,
     );
 
